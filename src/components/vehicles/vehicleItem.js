@@ -1,11 +1,15 @@
 import classes from './vehicleItem.module.css';
 import Card from '../ui/Card';
-import {useContext, useState} from "react";
+import {useContext} from "react";
 import FavoritesContext from "../../store/favorites-context";
-import VehicleList from "./vehicleList";
 import {useNavigate} from "react-router-dom";
 
-
+/**
+ * Displays The Vehicle
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
 function VehicleItem(props) {
     const favoritesCtx = useContext(FavoritesContext);
     const navigate = useNavigate();
@@ -13,23 +17,21 @@ function VehicleItem(props) {
 
     const itemIsFavorite = favoritesCtx.itemIsFavorite(props.id);
 
+    /**
+     * Toggle favorite vehicles
+     */
     function toggleFavoriteStatusHandler() {
         if (itemIsFavorite) {
             favoritesCtx.removeFavorite(props.id);
-        } else {
-            favoritesCtx.addFavorite({
-                id: props.id,
-                title: props.title,
-                make: props.make,
-                model: props.model,
-                image: props.image,
-                color: props.color,
-                price: props.price,
-            })
-        }
+            return
+        }  //Guard Clause
+        favoritesCtx.addFavorite({...props})
+
     }
 
-
+    /**
+     * Deletes an item from the database
+     */
     function handleDelete () {
         fetch('http://localhost:8080/vehicle/' + props.id,
             {
@@ -39,10 +41,6 @@ function VehicleItem(props) {
             navigate('/') //Takes User Back to Home Page after they submit new vehicle
         });
     }
-
-
-
-
     return (
         <li className={classes.item}>
             <Card>
@@ -50,8 +48,8 @@ function VehicleItem(props) {
                     <img src={(props.image.length > 0) ? props.image : FALLBACK_IMAGE} alt={props.title}/>
                 </div>
                 <div className={classes.content}>
-                    <h3>Make: {props.make}</h3>
-                    <h3>Model: {props.model}</h3>
+                    <h3>Make: {props.vehicleModel.vehicleMake.make}</h3>
+                    <h3>Model: {props.vehicleModel.model}</h3>
                     <p>COLOR: {props.color}</p>
                     <p>Price: {props.price}</p>
                     <p>VIN: {props.vin}</p>
