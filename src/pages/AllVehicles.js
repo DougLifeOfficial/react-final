@@ -42,6 +42,10 @@ function AllVehiclesPage() {
         </section>
     }
 
+    if (loadedVehicles.length === 0) {
+        return (<div>No Data Found!</div>)
+    }
+
     return (
         <section>
             <h1>All Vehicles</h1>
